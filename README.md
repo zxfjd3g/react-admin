@@ -169,12 +169,31 @@
     在setState()真正更新状态后处理
     添加完分类后, 获取指定parentId的分类列表
     
- ## 3. 商品管理
+## 3. 商品管理
  
- ### 1. 路由
+### 路由
     product.jsx
         index
-        saveUpdate
+        save-update
         detail
-      
-    
+
+### index
+    1). 界面
+        antd: Card/Select/Input/Button/Icon/Table
+    2). 分页:
+        前台分页: 
+            一性获取所有数据, 在浏览器端在显示分页效果, 
+            切换页码时不再请求后台
+        后台分页: 
+            每次只获取当前页的数据, 一般需要指定pageNum/pageSize参数
+            切换页码时, 需要再请求获取对应页的数据
+    3). 一般分页/搜索分页
+        定义2个接口请求函数
+        搜索条件的状态: searchType/searchName, 实时收集数据
+        判断当前需要请求哪个接口
+
+
+
+
+
+
