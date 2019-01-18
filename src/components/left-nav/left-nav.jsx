@@ -26,11 +26,14 @@ class LeftNav extends Component {
         )
         pre.push(subMenu)
 
+        new String()
         // 计算得到当前请求路径对应的父菜单的key
         const path = this.props.location.pathname
-        const cItem = item.children.find((child => child.key===path))
+        const cItem = item.children.find((child => path.indexOf(child.key)===0))
+        console.log('cItem', cItem)
         if(cItem) {
           this.openKey = item.key
+          this.selectKey = cItem.key
         }
       } else {
         /*
@@ -103,7 +106,7 @@ class LeftNav extends Component {
 
   render() {
     // 当前请求的路径
-    const path = this.props.location.pathname
+    const path = this.selectKey || this.props.location.pathname
     console.log('path', path)
     return (
       <div className='left-nav'>

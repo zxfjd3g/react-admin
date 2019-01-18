@@ -159,3 +159,22 @@
 # day 04
 
 ## 1. 修改分类的名称
+    antd组件: Modal/Form/Input
+    调用更新分类的接口请求函数
+    
+## 2. 查看/添加/更新二级分类
+    设计标识状态: subCategorys/parentId/parentName
+    根据parentId状态获取相应的分类列表(一级/二级)
+    根据parentId显示一级或二级列表
+    在setState()真正更新状态后处理
+    添加完分类后, 获取指定parentId的分类列表
+    
+ ## 3. 商品管理
+ 
+ ### 1. 路由
+    product.jsx
+        index
+        saveUpdate
+        detail
+      
+    
