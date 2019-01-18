@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Card, Select, Input, Button, Icon, Table} from 'antd'
 
-import {reqProducts} from '../../api'
+import {reqProducts, reqSearchProducts} from '../../api'
 
 
 const Option = Select.Option
@@ -12,7 +12,9 @@ export default class ProductIndex extends Component {
 
   state = {
     total: 0, // 商品的总数量
-    products: [] // 当前页列表数据
+    products: [], // 当前页列表数据
+    searchType: 'productName', // 搜索类型  productName / productDesc
+    searchName: '', // 搜索关键字
   }
 
   /*
@@ -61,7 +63,14 @@ export default class ProductIndex extends Component {
   异步获取指定页的数据
    */
   getProducts = async (pageNum) => {
-    const result = await reqProducts(pageNum, 3)
+    const {searchType, searchName} = this.state
+    let result
+    if(searchName) { // 搜索分页
+      result = await reqSearchProducts({pageNum, pageSize: 3, searchType, searchName})
+    } else { // 一般分页
+      result = await reqProducts(pageNum, 3)
+    }
+    console.log('getProducts()', result)
     if(result.status===0) {
       const {total, list} = result.data
       this.setState({
@@ -81,19 +90,20 @@ export default class ProductIndex extends Component {
 
   render() {
 
-    const {products, total} = this.state
+    const {products, total, searchType} = this.state
 
     return (
       <div>
         <Card>
-          <Select value='1'>
-            <Option key='1' value='1'>按名称搜索</Option>
-            <Option key='2' value='2'>按描述搜索</Option>
+          <Select value={searchType} onChange={value => this.setState({searchType: value})}>
+            <Option key='productName' value='productName'>按名称搜索</Option>
+            <Option key='productDesc' value='productDesc'>按描述搜索</Option>
           </Select>
 
-          <Input style={{width: 150, marginLeft: 10, marginRight: 10}} placeholder='关键字'/>
+          <Input style={{width: 150, marginLeft: 10, marginRight: 10}} placeholder='关键字'
+                onChange={(e) => this.setState({searchName: e.target.value})}/>
 
-          <Button type='primary'>搜索</Button>
+          <Button type='primary' onClick={() => this.getProducts(1)}>搜索</Button>
 
           <Button type='primary' style={{float: 'right'}}>
             <Icon type='plus'/>

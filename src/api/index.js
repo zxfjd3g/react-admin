@@ -25,6 +25,14 @@ export const reqUpdateCategory = ({categoryId, categoryName}) => ajax('/manage/c
 // 获取指定页的商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {pageNum, pageSize})
 
+// 搜索商品分页列表
+  // searchType: productDesc/ productName
+export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) => ajax('/manage/product/search', {
+  pageNum,
+  pageSize,
+  [searchType]: searchName
+})
+
 
 // 请求获取天气
 export function reqWeather (city) {
