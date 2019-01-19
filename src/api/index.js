@@ -21,6 +21,9 @@ export const reqCategorys = (parentId) => ajax('/manage/category/list', {parentI
 export const reqAddCategory = (parentId, categoryName) => ajax('/manage/category/add', {parentId, categoryName}, 'POST')
 // 更新分类
 export const reqUpdateCategory = ({categoryId, categoryName}) => ajax('/manage/category/update', {categoryId, categoryName}, 'POST')
+// 根据分类ID获取分类
+export const reqCategory = (categoryId) => ajax('/manage/category/info', {categoryId})
+
 
 // 获取指定页的商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {pageNum, pageSize})
@@ -32,6 +35,9 @@ export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) =
   pageSize,
   [searchType]: searchName
 })
+
+// 删除图片
+export const deleteImg = (name) => ajax('/manage/img/delete', {name}, 'post')
 
 
 // 请求获取天气

@@ -173,9 +173,9 @@
  
 ### 路由
     product.jsx
-        index
-        save-update
-        detail
+        index: 商品管理的主页面
+        add-update: 商品添加/更新
+        detail: 商品详情
 
 ### index
     1). 界面
@@ -187,6 +187,8 @@
         后台分页: 
             每次只获取当前页的数据, 一般需要指定pageNum/pageSize参数
             切换页码时, 需要再请求获取对应页的数据
+        如何选择?
+            数据数量特别多时用后台分页, 不太多时用前台分页
     3). 一般分页/搜索分页
         定义2个接口请求函数
         搜索条件的状态: searchType/searchName, 实时收集数据
