@@ -22,6 +22,9 @@ export default class RichTextEditor extends Component {
     editorState: EditorState.createEmpty(),
   }
 
+  /*
+  当输入改变时立即保存状态数据
+   */
   onEditorStateChange = (editorState) => {
     this.setState({
       editorState,
@@ -36,6 +39,7 @@ export default class RichTextEditor extends Component {
   }
 
   componentWillMount () {
+    // 根据传入的html文本初始显示
     const detail = this.props.detail
     if(detail) { // 如果传入才需要做处理
       const blocksFromHtml = htmlToDraft(detail);

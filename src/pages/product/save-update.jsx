@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Icon, Form, Input, Select, Button} from 'antd'
 
+import PicturesWall from './pictures-wall'
 import RichTextEditor from './rich-text-editor'
 import {reqCategorys} from '../../api'
 const Item = Form.Item
@@ -172,7 +173,7 @@ class ProductSaveUpdate extends Component {
             </Item>
 
             <Item label='商品图片' {...formItemLayout}>
-              图片上传组件界面
+              <PicturesWall imgs={product.imgs}/>
             </Item>
 
             <Item label='商品详情' labelCol={{span: 2}} wrapperCol={{span: 20}}>
