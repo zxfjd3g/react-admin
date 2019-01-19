@@ -37,7 +37,10 @@ export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) =
 })
 
 // 删除图片
-export const deleteImg = (name) => ajax('/manage/img/delete', {name}, 'post')
+export const reqDeleteImg = (name) => ajax('/manage/img/delete', {name}, 'POST')
+
+// 添加或者更新商品
+export const reqAddUpdateCategory = (product) => ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
 
 
 // 请求获取天气

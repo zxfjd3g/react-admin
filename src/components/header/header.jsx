@@ -72,7 +72,7 @@ class Header extends Component {
         title = menu.title
       } else if (menu.children) {
         menu.children.forEach(item => {
-          if(item.key===path) {
+          if(path.indexOf(item.key)===0) {
             title = item.title
           }
         })
