@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Icon, Form, Input, Select, Button} from 'antd'
 
+import RichTextEditor from './rich-text-editor'
 import {reqCategorys} from '../../api'
 const Item = Form.Item
 const Option = Select.Option
@@ -58,7 +59,11 @@ class ProductSaveUpdate extends Component {
    */
   submit = () => {
     const values = this.props.form.getFieldsValue()
-    console.log('values', values)
+
+    // 得到富文本输入内容 (标签对象就是组件对象)
+    const detail = this.refs.editor.getContent()
+
+    console.log('values', values, detail)
   }
 
 
@@ -170,8 +175,8 @@ class ProductSaveUpdate extends Component {
               图片上传组件界面
             </Item>
 
-            <Item label='商品详情' {...formItemLayout}>
-              富文本编程器组件界面
+            <Item label='商品详情' labelCol={{span: 2}} wrapperCol={{span: 20}}>
+              <RichTextEditor ref='editor' detail={product.detail}/>
             </Item>
 
             <Button type='primary' onClick={this.submit}>提交</Button>

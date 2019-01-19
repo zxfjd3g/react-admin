@@ -4,6 +4,9 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 import ProductIndex from './index'
 import ProductSaveUpdate from './save-update'
 import ProductDetail from './detail'
+
+import './product.less'
+
 /*
 管理的商品管理路由组件
  */
