@@ -119,9 +119,9 @@ class ProductSaveUpdate extends Component {
 
     let initValue1 = '未选择'
     let initValue2 = '未选择'
-    if(product.pCategoryId==='0') {
+    if(product.pCategoryId==='0') { // 一级分类下的商品
       initValue1 = product.categoryId
-    } else if (product.pCategoryId) {
+    } else if (product.pCategoryId) { // 二级分类下的商品
       initValue1 = product.pCategoryId
       initValue2 = product.categoryId || '未选择'
     }
