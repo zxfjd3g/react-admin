@@ -17,6 +17,7 @@ class ProductSaveUpdate extends Component {
     subCategorys: [],  // 二级分类列表
   }
 
+
   getCategorys = async (parentId) => {
     const result = await reqCategorys(parentId)
     const categorys = result.data
@@ -25,8 +26,16 @@ class ProductSaveUpdate extends Component {
         categorys
       })
     } else {
+
       this.setState({
         subCategorys: categorys
+      }, () => {
+        if(categorys.length>0) {
+          this.props.form.setFieldsValue({
+            category2: categorys[0]._id
+          })
+        }
+
       })
     }
   }
