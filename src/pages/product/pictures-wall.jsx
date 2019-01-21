@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Upload, Icon, Modal, message} from 'antd'
 
+import {BASE_IMG_PATH, UPLOAD_IMG_NAME} from '../../utils/constant'
 import {reqDeleteImg} from '../../api'
 
 /*
@@ -79,7 +80,7 @@ export default class PicturesWall extends React.Component {
         uid: -index,
         name: img,
         status: 'done', // loading: 上传中, done: 上传完成, remove: 删除
-        url: 'http://localhost:5000/upload/' + img,
+        url: BASE_IMG_PATH + img,
       }))
       this.state.fileList = fileList
     }
@@ -98,7 +99,7 @@ export default class PicturesWall extends React.Component {
         <Upload
           action="/manage/img/upload"
           accept="image/*"
-          name='image'
+          name= {UPLOAD_IMG_NAME}
           listType="picture-card"
           fileList={fileList}
           onPreview={this.handlePreview}

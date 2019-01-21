@@ -3,7 +3,7 @@ import {Icon, Form, Input, Select, Button, message} from 'antd'
 
 import PicturesWall from './pictures-wall'
 import RichTextEditor from './rich-text-editor'
-import {reqCategorys, reqAddUpdateCategory} from '../../api'
+import {reqCategorys, reqAddUpdateProduct} from '../../api'
 const Item = Form.Item
 const Option = Select.Option
 
@@ -92,7 +92,7 @@ class ProductSaveUpdate extends Component {
       product._id = p._id
     }
 
-    const result = await reqAddUpdateCategory(product)
+    const result = await reqAddUpdateProduct(product)
     if(result.status===0) {
       message.success('保存商品成功了')
       this.props.history.replace('/product/index')

@@ -40,7 +40,10 @@ export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) =
 export const reqDeleteImg = (name) => ajax('/manage/img/delete', {name}, 'POST')
 
 // 添加或者更新商品
-export const reqAddUpdateCategory = (product) => ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
+export const reqAddUpdateProduct = (product) => ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
+
+// 更新商品状态(上架/下架)
+export const reqUpdateProductStatus = (productId, status) => ajax('/manage/product/updateStatus', {productId, status}, 'POST')
 
 
 // 请求获取天气
