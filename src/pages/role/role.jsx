@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Button,
@@ -6,11 +7,15 @@ import {
   Form,
   Input,
   Modal,
+  message,
+  Tree
 } from 'antd'
 
+import menuList from '../../config/menuConfig'
 import {formateDate} from '../../utils/utils'
 import {reqRoles, reqAddRole, reqUpdateRole} from '../../api'
 const FormItem = Form.Item
+const { TreeNode } = Tree
 
 /*
 后台管理的角色管理路由组件
@@ -21,6 +26,7 @@ export default class Role extends Component {
     isShowAdd: false, // 是否显示添加角色的Modal
     isShowRoleAuth: false, // 是否显示设置角色权限的Modal
     roles: [], // 所有角色的列表
+    role: {}, // 当前选中的角色
   }
 
   /*
@@ -104,8 +110,31 @@ export default class Role extends Component {
   /*
   添加角色
    */
-  addRole = () => {
+  addRole = async () => {
+    const roleName = this.form.getFieldValue('roleName')
+    this.form.resetFields()
+    this.setState({
+      isShowAdd: false
+    })
 
+    const result = await reqAddRole(roleName)
+    if(result.status===0) {
+      message.success('添加角色成功')
+      this.getRoles()
+    }
+  }
+
+  /*
+  用来绑定行操作的各种事件监听
+   */
+  onRow=(role) => {
+    return {
+      onClick: (event) => {// 点击行
+        this.setState({
+          role
+        })
+      },
+    }
   }
 
   componentWillMount() {
@@ -117,13 +146,25 @@ export default class Role extends Component {
   }
 
   render() {
-    const {roles, isShowAdd, isShowRoleAuth} = this.state
+    const {roles,role, isShowAdd, isShowRoleAuth} = this.state
+
+    // 选择功能的配置
+    const rowSelection = {
+      type: 'radio',
+      selectedRowKeys: [role._id],
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log('onChange()', selectedRowKeys, selectedRows)
+        this.setState({
+          role: selectedRows[0]
+        })
+      }
+    }
 
     return (
       <div>
         <Card>
           <Button type="primary" onClick={this.showAddRole}>创建角色</Button>&nbsp;&nbsp;
-          <Button type="primary" onClick={this.showRoleAuth}>设置角色权限</Button>&nbsp;&nbsp;
+          <Button type="primary" onClick={this.showRoleAuth} disabled={!role._id}>设置角色权限</Button>&nbsp;&nbsp;
         </Card>
 
         <Table
@@ -131,6 +172,8 @@ export default class Role extends Component {
           rowKey='_id'
           dataSource={roles}
           bordered
+          rowSelection={rowSelection}
+          onRow = {this.onRow}
           pagination={{defaultPageSize: 10, showQuickJumper: true}}
         />
 
@@ -152,7 +195,7 @@ export default class Role extends Component {
           onCancel={() => this.setState({isShowRoleAuth: false})}
           onOk={this.updateRole}
         >
-          <RoleAuthForm/>
+          <RoleAuthForm roleName={role.name}/>
         </Modal>
       </div>
     )
@@ -200,13 +243,66 @@ AddRoleForm = Form.create()(AddRoleForm)
  */
 class RoleAuthForm extends Component {
 
+  static propTypes = {
+    roleName: PropTypes.string
+  }
+
+  onCheck = (checkedKeys, info) => {
+    console.log('onCheck', checkedKeys, info);
+  }
+
+  /*
+  渲染多个TreeNode
+   */
+  renderTreeNodes = (menuList) => {
+    return menuList.reduce((pre, menu) => {
+      /*
+      {
+        title: '首页', // 菜单标题名称
+        key: '/home', // 对应的path
+        icon: 'home', // 图标名称
+        children: []
+      }
+       */
+      const node = (
+        <TreeNode title={menu.title} key={menu.key}>
+          {
+            menu.children ?
+            this.renderTreeNodes(menu.children)
+            : null
+          }
+        </TreeNode>
+      )
+      pre.push(node)
+      return pre
+    }, [])
+  }
+
+
+
   render() {
 
+    const {roleName} = this.props
+
+    const formItemLayout = {
+      labelCol: {span: 5},
+      wrapperCol: {span: 16}
+    }
     return (
       <Form>
-        <FormItem label="角色名称：">
-          <Input/>
+        <FormItem label="角色名称：" {...formItemLayout}>
+          <Input value={roleName} disabled/>
         </FormItem>
+
+        <Tree
+          checkable
+          defaultExpandAll
+          onCheck={this.onCheck}
+        >
+          <TreeNode title="平台权限" key="all">
+            {this.renderTreeNodes(menuList)}
+          </TreeNode>
+        </Tree>
       </Form>
     )
   }
