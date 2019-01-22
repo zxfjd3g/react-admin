@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import {
   Card,
@@ -19,6 +19,15 @@ const { TreeNode } = Tree
 
 /*
 后台管理的角色管理路由组件
+Component:
+  shouldComponentUpdate()返回值总是true, 只要setState()就导致重新render(即使数据没有变化)
+  重写shouldComponentUpdate(), 判断state和props中的数据是否发生改变, 如果没有变化返回false, 否则返回true
+PureComponent:
+  重写shouldComponentUpdate(), 对组件状态/属性数据进行改变的判断, 如果没有变化返回false, 否则返回true
+  如果直接修改state中的数据, 再调用setState()更新, 不会重新渲染(有问题)
+      原因: 状态数据变量的值没有变, shouldComponentUpdate()的返回值是false
+      解决: 生成一个状态数据拷贝数据, 更新拷贝的数据, 再调用setState(), shouldComponentUpdate()的返回值是true
+
  */
 export default class Role extends Component {
 
@@ -27,6 +36,7 @@ export default class Role extends Component {
     isShowRoleAuth: false, // 是否显示设置角色权限的Modal
     roles: [], // 所有角色的列表
     role: {}, // 当前选中的角色
+    menus: [], // 当前角色的所有权限的数组
   }
 
   /*
@@ -103,8 +113,19 @@ export default class Role extends Component {
   /*
   更新角色
    */
-  updateRole = () => {
+  updateRole = async () => {
+    this.setState({
+      isShowRoleAuth: false
+    })
 
+    const {role, menus} = this.state
+    // 更新role的menus
+    role.menus = menus
+    const result = await reqUpdateRole(role)
+    if(result.status===0) {
+      message.success('授权成功')
+      this.getRoles()
+    }
   }
 
   /*
@@ -118,11 +139,28 @@ export default class Role extends Component {
     })
 
     const result = await reqAddRole(roleName)
-    if(result.status===0) {
+    if (result.status === 0) {
       message.success('添加角色成功')
-      this.getRoles()
+      const role = result.data
+
+      // const roles = this.state.roles  // 不会重新渲染
+      const roles = [...this.state.roles]
+
+      roles.push(role)
+      this.setState({
+        roles: roles
+      })
+
     }
   }
+    /*
+    const arr = []
+    const arr2 = arr
+    console.log(arr===arr2)
+    arr2.push(1)
+    console.log(arr===arr2)
+    */
+
 
   /*
   用来绑定行操作的各种事件监听
@@ -131,10 +169,21 @@ export default class Role extends Component {
     return {
       onClick: (event) => {// 点击行
         this.setState({
-          role
+          role,
+          menus: role.menus
         })
+
       },
     }
+  }
+
+  /*
+  更新当前角色的menus
+   */
+  setRoleMenus = (menus) => {
+    this.setState({
+      menus
+    })
   }
 
   componentWillMount() {
@@ -145,8 +194,16 @@ export default class Role extends Component {
     this.getRoles()
   }
 
+
+ /* shouldComponentUpdate (nextProps, nextState) {
+    const {role, menus, roles, isShowAdd} = this.state
+    console.log('shouldComponentUpdate()', nextProps, nextState, nextState.roles===roles)
+    return nextState.role!=role || nextState.menus!=menus || nextState.roles!=roles || nextState.isShowAdd!=isShowAdd
+  }*/
+
   render() {
-    const {roles,role, isShowAdd, isShowRoleAuth} = this.state
+    console.log('render()')
+    const {roles,role, menus, isShowAdd, isShowRoleAuth} = this.state
 
     // 选择功能的配置
     const rowSelection = {
@@ -174,7 +231,7 @@ export default class Role extends Component {
           bordered
           rowSelection={rowSelection}
           onRow = {this.onRow}
-          pagination={{defaultPageSize: 10, showQuickJumper: true}}
+          pagination={{defaultPageSize: 100, showQuickJumper: true}}
         />
 
         <Modal
@@ -192,10 +249,13 @@ export default class Role extends Component {
         <Modal
           title="设置角色权限"
           visible={isShowRoleAuth}
-          onCancel={() => this.setState({isShowRoleAuth: false})}
+          onCancel={() => this.setState({isShowRoleAuth: false, menus: role.menus})}
           onOk={this.updateRole}
         >
-          <RoleAuthForm roleName={role.name}/>
+          <RoleAuthForm
+            roleName={role.name}
+            menus={menus}
+            setRoleMenus = {this.setRoleMenus}/>
         </Modal>
       </div>
     )
@@ -206,7 +266,7 @@ export default class Role extends Component {
 /*
 用来添加角色的form组件
  */
-class AddRoleForm extends Component {
+class AddRoleForm extends PureComponent {
 
   componentWillMount() {
     this.props.setForm(this.props.form)
@@ -241,14 +301,17 @@ AddRoleForm = Form.create()(AddRoleForm)
 /*
 用来设置角色权限的form组件
  */
-class RoleAuthForm extends Component {
+class RoleAuthForm extends PureComponent {
 
   static propTypes = {
-    roleName: PropTypes.string
+    roleName: PropTypes.string,
+    menus: PropTypes.array,
+    setRoleMenus: PropTypes.func,
   }
 
   onCheck = (checkedKeys, info) => {
     console.log('onCheck', checkedKeys, info);
+    this.props.setRoleMenus(checkedKeys)
   }
 
   /*
@@ -282,7 +345,7 @@ class RoleAuthForm extends Component {
 
   render() {
 
-    const {roleName} = this.props
+    const {roleName, menus} = this.props
 
     const formItemLayout = {
       labelCol: {span: 5},
@@ -298,6 +361,7 @@ class RoleAuthForm extends Component {
           checkable
           defaultExpandAll
           onCheck={this.onCheck}
+          checkedKeys={menus}
         >
           <TreeNode title="平台权限" key="all">
             {this.renderTreeNodes(menuList)}

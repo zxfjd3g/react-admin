@@ -232,3 +232,8 @@
 
 ## 2. 用户管理
 
+
+## setState()
+   只要执行setState(), 就会导航重新render()
+
+
