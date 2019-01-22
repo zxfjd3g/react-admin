@@ -8,6 +8,8 @@ import {
   Modal,
 } from 'antd'
 
+import {formateDate} from '../../utils/utils'
+import {reqRoles, reqAddRole, reqUpdateRole} from '../../api'
 const FormItem = Form.Item
 
 /*
@@ -19,6 +21,19 @@ export default class Role extends Component {
     isShowAdd: false, // 是否显示添加角色的Modal
     isShowRoleAuth: false, // 是否显示设置角色权限的Modal
     roles: [], // 所有角色的列表
+  }
+
+  /*
+  异步获取所有角色的列表
+   */
+  getRoles = async () => {
+    const result = await reqRoles()
+    if(result.status===0) {
+      const roles = result.data
+      this.setState({
+        roles
+      })
+    }
   }
 
   /*
@@ -43,6 +58,19 @@ export default class Role extends Component {
   初始化Table的字段数据
    */
   initColumns = () => {
+    /*
+    {
+      "menus": [
+        "/home"
+      ],
+      "_id": "5c30c5bdc3bc1f6128a60375",
+      "name": "测试",
+      "auth_name": "admin",
+      "create_time": 1546700221686,
+      "__v": 0,
+      "auth_time": 1548001177165
+    }
+     */
     this.columns = [
       {
         title: '角色名称',
@@ -51,10 +79,13 @@ export default class Role extends Component {
       {
         title: '创建时间',
         dataIndex: 'create_time',
+        // render: (create_time) => formateDate(create_time)
+        render: formateDate
       },
       {
         title: '授权时间',
         dataIndex: 'auth_time',
+        render: formateDate
       },
       {
         title: '授权人',
@@ -79,6 +110,10 @@ export default class Role extends Component {
 
   componentWillMount() {
     this.initColumns()
+  }
+
+  componentDidMount () {
+    this.getRoles()
   }
 
   render() {

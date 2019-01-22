@@ -24,7 +24,6 @@ export const reqUpdateCategory = ({categoryId, categoryName}) => ajax('/manage/c
 // 根据分类ID获取分类
 export const reqCategory = (categoryId) => ajax('/manage/category/info', {categoryId})
 
-
 // 获取指定页的商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {pageNum, pageSize})
 
@@ -44,6 +43,18 @@ export const reqAddUpdateProduct = (product) => ajax('/manage/product/' + (produ
 
 // 更新商品状态(上架/下架)
 export const reqUpdateProductStatus = (productId, status) => ajax('/manage/product/updateStatus', {productId, status}, 'POST')
+
+
+// 添加角色
+export const reqAddRole = (roleName) => ajax('/manage/role/add', {
+  roleName
+}, 'POST')
+
+// 获取角色列表
+export const reqRoles = () => ajax('/manage/role/list')
+
+// 更新角色(给角色设置权限)
+export const reqUpdateRole = (role) => ajax('/manage/role/update', role, 'POST')
 
 
 // 请求获取天气

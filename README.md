@@ -227,3 +227,8 @@
         根据商品的pCategoryId和categoryId请求获取分类名称: Promise.all()
         解析html标签文本显示
 
+# day07
+## 1. 角色管理
+
+## 2. 用户管理
+
