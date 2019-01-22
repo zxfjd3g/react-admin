@@ -218,5 +218,12 @@
         this.props.location.state: 读取携带的数据
     2. 请求后台实现添加/更新功能
 
-
+# day 06
+    1. 商品上架与下架
+        根据商品的status做对应显示
+        点击按钮, 发送更新商品状态的请求
+    2. 商品详情界面
+        跳转路由, 携带product数据显示
+        根据商品的pCategoryId和categoryId请求获取分类名称: Promise.all()
+        解析html标签文本显示
 
