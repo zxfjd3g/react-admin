@@ -12,8 +12,15 @@ const BASE = 'http://localhost:5000'
 // 登陆
 export const reqLogin = (username, password) => ajax('/login', {username, password}, 'POST')
 
-// 添加用户
-export const reqAddUser = (user) => ajax('/manage/user/add', user, 'POST')
+// 添加/更新用户
+export const reqAddOrUpdateUser = (user) => ajax('/manage/user/'+(user._id ? 'update' : 'add'), user, 'POST')
+
+// 获取用户列表
+export const reqUsers = () => ajax('/manage/user/list')
+
+// 删除用户
+export const reqDeleteUser = (userId) => ajax('/manage/user/delete', {userId}, 'POST')
+
 
 // 获取一级/二级分类列表
 export const reqCategorys = (parentId) => ajax('/manage/category/list', {parentId})

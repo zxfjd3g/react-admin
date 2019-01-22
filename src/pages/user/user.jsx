@@ -9,6 +9,12 @@ import {
   Modal,
 } from 'antd'
 
+import {
+  reqUsers,
+  reqAddOrUpdateUser,
+  reqDeleteUser
+} from '../../api'
+import {formateDate} from '../../utils/utils'
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -19,7 +25,8 @@ export default class User extends Component {
 
   state = {
     isShow: false,
-    users: []
+    users: [], // 所有用户的列表
+    roles: [], // 所有角色的列表
   }
 
   /*
@@ -42,10 +49,12 @@ export default class User extends Component {
       {
         title: '注册时间',
         dataIndex: 'create_time',
+        render: formateDate
       },
       {
         title: '所属角色',
         dataIndex: 'role_id',
+        render: value => this.roleNames[value]
       },
       {
         title: '操作',
@@ -61,6 +70,33 @@ export default class User extends Component {
   }
 
   /*
+  根据角色的数组生成一个包含所有角色名的对象容器
+   */
+  initRoleNames = (roles) => {
+    this.roleNames = roles.reduce((pre, role) => {
+      pre[role._id] = role.name
+      return pre
+    }, {})
+  }
+
+  /*
+  异步获取所有用户列表
+   */
+  getUsers = async () => {
+    const result = await reqUsers()
+    if(result.status===0) {
+      const {users, roles} = result.data
+      // 初始化生成一个包含所有角色名的对象容器 {_id1: name1, _id2: nam2}
+      this.initRoleNames(roles)
+      this.setState({
+        users,
+        roles
+      })
+    }
+  }
+
+
+  /*
   显示添加用户的界面
    */
   showAddUser = () => {
@@ -69,9 +105,6 @@ export default class User extends Component {
     })
   }
 
-  /*
-  添加或更新用户
-   */
   AddOrUpdateUser = () => {
     this.setState({
       isShow: false
@@ -80,6 +113,10 @@ export default class User extends Component {
 
   componentWillMount() {
     this.initColumns()
+  }
+
+  componentDidMount () {
+    this.getUsers()
   }
 
   render() {
