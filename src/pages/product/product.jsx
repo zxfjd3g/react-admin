@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 
 import ProductIndex from './index'
-import ProductSaveUpdate from './save-update'
+import ProductAddUpdate from './add-update'
 import ProductDetail from './detail'
 
 import './product.less'
@@ -15,7 +15,7 @@ export default class Product extends Component {
     return (
       <Switch>
         <Route path='/product/index' component={ProductIndex}/>
-        <Route path='/product/saveupdate' component={ProductSaveUpdate}/>
+        <Route path='/product/addupdate' component={ProductAddUpdate}/>
         <Route path='/product/detail' component={ProductDetail}/>
         <Redirect to='/product/index'/>
       </Switch>

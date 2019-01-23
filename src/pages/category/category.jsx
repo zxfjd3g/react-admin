@@ -185,7 +185,7 @@ export default class Category extends Component {
         <Card>
           {
             parentId==='0'
-            ? <span style={{fontSize: 20}}>一级分类列表</span>
+            ? <span style={{fontSize: 15}}>一级分类列表</span>
             : (
                 <span>
                   <a href="javascript:" onClick={this.showCategorys}>一级分类222</a>

@@ -55,6 +55,7 @@ class LeftNav extends Component {
      */
     if(item.isPublic || MemoryUtils.user.username==='admin' || menuSet.has(key)) {
       return true
+
     // 如果有子节点, 需要判断有没有一个child的key在menus中
     } else if(item.children){
       return !!item.children.find(child => menuSet.has(child.key))
@@ -62,8 +63,8 @@ class LeftNav extends Component {
   }
 
   /*
-得到当前用户需要显示的所有menu元素的列表
-使用递归调用
+  得到当前用户需要显示的所有menu元素的列表
+  使用递归调用
  */
   getNodes = (list) => {
     return list.reduce((pre, item) => {
@@ -79,7 +80,6 @@ class LeftNav extends Component {
           )
           pre.push(subMenu)
 
-          new String()
           // 计算得到当前请求路径对应的父菜单的key
           const path = this.props.location.pathname
           const cItem = item.children.find((child => path.indexOf(child.key)===0))

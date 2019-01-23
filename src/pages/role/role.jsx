@@ -14,6 +14,8 @@ import {
 import menuList from '../../config/menuConfig'
 import {formateDate} from '../../utils/utils'
 import {reqRoles, reqAddRole, reqUpdateRole} from '../../api'
+import MemoryUtils from "../../utils/MemoryUtils";
+import storageUtils from "../../utils/storageUtils";
 const FormItem = Form.Item
 const { TreeNode } = Tree
 
@@ -123,8 +125,16 @@ export default class Role extends Component {
     role.menus = menus
     const result = await reqUpdateRole(role)
     if(result.status===0) {
-      message.success('授权成功')
-      this.getRoles()
+      // 如果更新是当前登陆用户对应的角色, 强制重新登陆
+      if(MemoryUtils.user.role_id===role._id) {
+        storageUtils.removeUser()
+        MemoryUtils.user = {}
+        this.props.history.replace('/login')
+        message.info('当前用户的权限更新了, 请重新登陆')
+      } else {
+        message.success('授权成功')
+        this.getRoles()
+      }
     }
   }
 

@@ -10,7 +10,7 @@ const Option = Select.Option
 /*
 商品管理的添加/更新路由组件
  */
-class ProductSaveUpdate extends Component {
+class ProductAddUpdate extends Component {
 
   state = {
     categorys: [], // 一级分类列表
@@ -222,4 +222,4 @@ class ProductSaveUpdate extends Component {
   }
 }
 
-export default Form.create()(ProductSaveUpdate)
+export default Form.create()(ProductAddUpdate)
