@@ -229,11 +229,51 @@
 
 # day07
 ## 1. 角色管理
-
+    1. 显示所有角色列表
+    2. 添加角色
+    3. 给角色授权
+        通过递归实现所有权限菜单树状显示
+    4. 关于Component与PureComponent, setState()与shouldComponentUpdate()
+        Component:
+          shouldComponentUpdate()返回值总是true, 只要setState()就导致重新render(即使数据没有变化)
+          重写shouldComponentUpdate(), 判断state和props中的数据是否发生改变, 如果没有变化返回false, 否则返回true
+        PureComponent:
+          重写shouldComponentUpdate(), 对组件状态/属性数据进行改变的判断, 如果没有变化返回false, 否则返回true
+          如果直接修改state中的数据, 再调用setState()更新, 不会重新渲染(有问题)
+              原因: 状态数据变量的值没有变, shouldComponentUpdate()的返回值是false
+              解决: 生成一个状态数据拷贝数据, 更新拷贝的数据, 再调用setState(), shouldComponentUpdate()的返回值是true
 ## 2. 用户管理
+    1. 显示用户列表
+        使用对象容器避免数组的遍历查找
 
 
-## setState()
-   只要执行setState(), 就会导航重新render()
+## 内存
+    const a = {}
+    a.xxx = {}
+    
+    const persons = [{m: 1}]
+    
+    /*
+    const a = {}
+    const b = []
+    const c = function (){}
+    a.d = {}
+    
+    a = b
+    一个对象自身中不可能有另一个对象, 每个对象都有单独的内存空间
+    变量的赋值(a = b): 拷贝右边变量的值保存到左边的变量
+    对象的赋值(a = {}): 将对象的地址拷贝保存到左边的变量
+    一个变量本身是不能存储一个对象, 保存的只可能是对象的地址值
+    
+    const arr = [{m: 1}]
+    */
+    
+# day08
 
+## 1. 用户管理
+    1. 添加
+    2. 更新
+    3. 删除
+## 2. 菜单导航的权限控制
 
+## 3. 数据可视化: echarts

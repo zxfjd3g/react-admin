@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Button,
@@ -60,9 +61,9 @@ export default class User extends Component {
         title: '操作',
         render: (user) => (
           <span>
-            <a href="javascript:;">修改</a>
+            <a href="javascript:;" onClick={() => this.showUpdate(user)}>修改</a>
             &nbsp;&nbsp;
-            <a href="javascript:;">删除</a>
+            <a href="javascript:;" onClick={() => this.clickDelete(user)}>删除</a>
           </span>
         )
       },
@@ -77,6 +78,32 @@ export default class User extends Component {
       pre[role._id] = role.name
       return pre
     }, {})
+  }
+
+  /*
+  响应点击删除用户
+   */
+  clickDelete = (user) => {
+    Modal.confirm({
+      content: `确定删除${user.username}吗?`,
+      onOk: async () => {
+        const result = await reqDeleteUser(user._id)
+        if(result.status===0) {
+          this.getUsers()
+        }
+      }
+    })
+  }
+
+  /*
+  显示修改用户的界面
+   */
+  showUpdate = (user) => {
+    // 保存user
+    this.user = user
+    this.setState({
+      isShow: true
+    })
   }
 
   /*
@@ -100,15 +127,31 @@ export default class User extends Component {
   显示添加用户的界面
    */
   showAddUser = () => {
+    this.user = null
     this.setState({
       isShow: true
     })
   }
 
-  AddOrUpdateUser = () => {
+  /*
+  添加/更新用户
+   */
+  AddOrUpdateUser = async () => {
+    // 获取表单数据
+    const user = this.form.getFieldsValue()
+    this.form.resetFields()
+    if(this.user) {
+      user._id = this.user._id
+    }
     this.setState({
       isShow: false
     })
+
+    const result = await reqAddOrUpdateUser(user)
+    if(result.status===0) {
+      this.getUsers()
+    }
+
   }
 
   componentWillMount() {
@@ -121,7 +164,8 @@ export default class User extends Component {
 
   render() {
 
-    const {users, isShow} = this.state
+    const {users, roles, isShow} = this.state
+    const user = this.user || {}
 
     return (
       <div>
@@ -138,12 +182,12 @@ export default class User extends Component {
         />
 
         <Modal
-          title='添加用户'
+          title={user._id ? '修改用户' : '添加用户'}
           visible={isShow}
           onCancel={() => this.setState({isShow: false})}
           onOk={this.AddOrUpdateUser}
         >
-          <UserForm setForm={(form) => this.form = form}/>
+          <UserForm setForm={(form) => this.form = form} user={user} roles={roles}/>
         </Modal>
       </div>
     )
@@ -156,6 +200,12 @@ export default class User extends Component {
  */
 class UserForm extends Component {
 
+  static propTypes = {
+    setForm: PropTypes.func.isRequired,
+    user: PropTypes.object,
+    roles: PropTypes.array
+  }
+
   componentWillMount() {
     this.props.setForm(this.props.form)
   }
@@ -167,33 +217,40 @@ class UserForm extends Component {
       wrapperCol: {span: 16}
     }
 
+    const {user, roles} = this.props
     return (
       <Form>
         <FormItem label="用户名" {...formItemLayout}>
           {
             getFieldDecorator('username', {
-              initialValue: ''
+              initialValue: user.username
             })(
               <Input type="text" placeholder="请输入用户名"/>
             )
           }
         </FormItem>
 
-        <FormItem label="密码" {...formItemLayout}>
-          {
-            getFieldDecorator('password', {
-              initialValue: ''
-            })(
-              <Input type="passowrd" placeholder="请输入密码"/>
-            )
-          }
-        </FormItem>
+        {
+          !user._id ?
+            (
+              <FormItem label="密码" {...formItemLayout}>
+                {
+                  getFieldDecorator('password', {
+                    initialValue: ''
+                  })(
+                    <Input type="passowrd" placeholder="请输入密码"/>
+                  )
+                }
+              </FormItem>
+            ) : null
+        }
+
 
 
         <FormItem label="手机号" {...formItemLayout}>
           {
             getFieldDecorator('phone', {
-              initialValue: ''
+              initialValue: user.phone
             })(
               <Input type="phone" placeholder="请输入手机号"/>
             )
@@ -203,7 +260,7 @@ class UserForm extends Component {
         <FormItem label="邮箱" {...formItemLayout}>
           {
             getFieldDecorator('email', {
-              initialValue: ''
+              initialValue: user.email
             })(
               <Input type="email" placeholder="请输入邮箱"/>
             )
@@ -213,11 +270,12 @@ class UserForm extends Component {
         <FormItem label="角色" {...formItemLayout}>
           {
             getFieldDecorator('role_id', {
-              initialValue: ''
+              initialValue: user.role_id
             })(
               <Select style={{width: 200}}>
-                <Option key='1' value='1'>A</Option>
-                <Option key='2' value='2'>B</Option>
+                {
+                  roles.map(role => <Option key={role._id} value={role._id}>{role.name}</Option>)
+                }
               </Select>
             )
           }
