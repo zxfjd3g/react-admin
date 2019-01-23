@@ -14,6 +14,7 @@ import Role from '../role/role'
 import Bar from '../charts/bar'
 import Line from '../charts/line'
 import Pie from '../charts/pie'
+import Order from '../order/order'
 
 import './admin.less'
 
@@ -43,6 +44,7 @@ export default class Admin extends Component {
               <Route path='/product' component={Product}/>
               <Route path='/user' component={User}/>
               <Route path='/role' component={Role}/>
+              <Route path='/order' component={Order}/>
               <Route path='/charts/bar' component={Bar}/>
               <Route path='/charts/line' component={Line}/>
               <Route path='/charts/pie' component={Pie}/>
