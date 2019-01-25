@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import {NavLink, withRouter} from 'react-router-dom'
 import {Menu, Icon} from 'antd'
+import {connect} from 'react-redux'
 
+import {setMenuTitle} from '../../redux/actions'
 import menuList from '../../config/menuConfig'
 import MemoryUtils from '../../utils/MemoryUtils'
 import logo from '../../assets/images/logo.png'
@@ -63,10 +65,23 @@ class LeftNav extends Component {
   }
 
   /*
+  响应点击某个菜单项路由链接
+   */
+  clickLink = (item) => {
+    // 更新redux中的menuTitle状态数据
+    this.props.setMenuTitle(item.title)
+    // 保存当前点击的item所对应的key
+    this.selectKey = item.key
+  }
+
+  /*
   得到当前用户需要显示的所有menu元素的列表
   使用递归调用
  */
   getNodes = (list) => {
+    // 得到当前请求的路径: /home
+    const path = this.props.location.pathname
+
     return list.reduce((pre, item) => {
       // 如果有权限才添加, 如果没有权限, 当前item所对应导航项就不显示
       if(this.hasAuth(item)) {
@@ -81,7 +96,6 @@ class LeftNav extends Component {
           pre.push(subMenu)
 
           // 计算得到当前请求路径对应的父菜单的key
-          const path = this.props.location.pathname
           const cItem = item.children.find((child => path.indexOf(child.key)===0))
           console.log('cItem', cItem)
           if(cItem) {
@@ -98,12 +112,17 @@ class LeftNav extends Component {
            */
           const menuItem = (
             <Item key={item.key}>
-              <NavLink to={item.key} onClick={() => this.selectKey = item.key}>
+              <NavLink to={item.key} onClick={() => this.clickLink(item)}>
                 <Icon type={item.icon}/> {item.title}
               </NavLink>
             </Item>
           )
           pre.push(menuItem)
+
+          if(path===item.key || path.indexOf(item.key)===0) {
+            // 分发action, 设置菜单标题
+            this.props.setMenuTitle(item.title)
+          }
         }
       }
 
@@ -143,4 +162,7 @@ class LeftNav extends Component {
 }
 
 // 将一个非路由组件包装生成一个路由组件, 向非路由组件传递路由组件才有的3个属性: history/location/match
-export default withRouter(LeftNav)
+export default connect(
+  state => ({}),
+  {setMenuTitle}
+)(withRouter(LeftNav))

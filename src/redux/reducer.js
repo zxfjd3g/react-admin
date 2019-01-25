@@ -5,6 +5,9 @@ import {combineReducers} from 'redux'
 
 import storageUtils from '../utils/storageUtils'
 
+import {
+  SET_MENU_TITLE
+} from './action-types'
 
 /*
 管理当前菜单标题的reducer函数
@@ -12,6 +15,8 @@ import storageUtils from '../utils/storageUtils'
 const initMenuTitle = ''
 function menuTitle(state=initMenuTitle, action) {
   switch (action.type) {
+    case SET_MENU_TITLE:
+      return action.data
     default:
       return state
   }

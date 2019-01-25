@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, Modal} from 'antd'
 import {withRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import menuList from '../../config/menuConfig'
 import {reqWeather} from '../../api'
@@ -99,9 +100,9 @@ class Header extends Component {
     const user = MemoryUtils.user
 
     // 得到当前请求的路径
-    const path  = this.props.location.pathname
+    // const path  = this.props.location.pathname
     // 得到对应的标题
-    const title = this.getTitle(path)
+    // const title = this.getTitle(path)
 
     return (
       <div className='header'>
@@ -110,7 +111,7 @@ class Header extends Component {
           <a href="javascript:" onClick={this.logout}>退出</a>
         </Row>
         <Row className='breadcrumb'>
-          <Col span={4} className='breadcrumb-title'>{title}</Col>
+          <Col span={4} className='breadcrumb-title'>{this.props.title}</Col>
           <Col span={20} className='weather'>
             <span className='date'>{sysTime}</span>
             <span className='weather-img'>
@@ -124,4 +125,9 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header)
+export default connect(
+  state => ({title: state.menuTitle}),
+  {}
+)(withRouter(Header))
+
+
