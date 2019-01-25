@@ -98,7 +98,7 @@ class LeftNav extends Component {
            */
           const menuItem = (
             <Item key={item.key}>
-              <NavLink to={item.key}>
+              <NavLink to={item.key} onClick={() => this.selectKey = item.key}>
                 <Icon type={item.icon}/> {item.title}
               </NavLink>
             </Item>
@@ -133,7 +133,7 @@ class LeftNav extends Component {
         </NavLink>
 
         <Menu mode="inline" theme='dark'
-              defaultSelectedKeys={[path]}
+              selectedKeys={[path]}
               defaultOpenKeys={[this.openKey]}>
           {this.menuNodes}
         </Menu>
