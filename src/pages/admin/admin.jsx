@@ -15,6 +15,7 @@ import Bar from '../charts/bar'
 import Line from '../charts/line'
 import Pie from '../charts/pie'
 import Order from '../order/order'
+import NotFound from '../not-found/not-found'
 
 import './admin.less'
 
@@ -39,6 +40,7 @@ class Admin extends Component {
           <Header/>
           <div className='content'>
             <Switch>
+              <Redirect from='/' exact to='/home'/>
               <Route path='/home' component={Home}/>
               <Route path='/category' component={Category}/>
               <Route path='/product' component={Product}/>
@@ -48,7 +50,7 @@ class Admin extends Component {
               <Route path='/charts/bar' component={Bar}/>
               <Route path='/charts/line' component={Line}/>
               <Route path='/charts/pie' component={Pie}/>
-              <Redirect to='/home'/>
+              <Route component={NotFound}></Route>
             </Switch>
           </div>
           <Footer/>
