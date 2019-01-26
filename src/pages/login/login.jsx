@@ -6,10 +6,10 @@ import {
   Button
 } from 'antd'
 import PropTypes from 'prop-types'
+import {Redirect} from 'react-router-dom'
+import {connect} from 'react-redux'
 
-import storageUtils from '../../utils/storageUtils'
-import MemoryUtils from '../../utils/MemoryUtils'
-import {reqLogin} from '../../api'
+import {login} from '../../redux/actions'
 import logo from '../../assets/images/logo.png'
 import './index.less'
 
@@ -18,37 +18,21 @@ const Item = Form.Item
 /*
 登陆的路由组件
  */
-export default class Login extends Component {
+class Login extends Component {
 
-  state = {
-    errorMsg: '', // 错误提示信息
-  }
 
   // 登陆请求
   login = async (username, password) => {
-    const result = await reqLogin(username, password)
-    if(result.status===0) { // 登陆成功
-      const user = result.data
-      // 保存user
-      /*
-      localStorage
-      sessionStorage
-       */
-      // localStorage.setItem('USER_KEY', JSON.stringify(user))
-      storageUtils.saveUser(user)  // local中
-      MemoryUtils.user = user // 内存中
-
-      // 跳转到管理界面
-      this.props.history.replace('/')
-    } else { // 登陆失败
-      this.setState({
-        errorMsg: result.msg
-      })
-    }
+    this.props.login(username, password)
   }
 
   render() {
-    const {errorMsg} = this.state
+    const user = this.props.user
+    if(user._id) {// 用户已经登陆, 自动跳转到/home
+      // this.props.history.replace('/home')  // 事件回调函数中
+      return <Redirect to='/home'/>
+    }
+
     return (
       <div className='login'>
         <div className='login-header'>
@@ -59,8 +43,8 @@ export default class Login extends Component {
         <div className='login-content'>
           <div className='login-box'>
             <div className="error-msg-wrap">
-              <div className={errorMsg ? "show" : ""}>
-                {errorMsg}
+              <div className={user.msg ? "show" : ""}>
+                {user.msg}
               </div>
             </div>
             <div className="title">用户登陆</div>
@@ -71,6 +55,11 @@ export default class Login extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({user: state.user}),
+  {login}
+)(Login)
 
 /*
 包含<Form>被包装组件

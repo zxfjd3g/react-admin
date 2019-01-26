@@ -3,11 +3,11 @@ import {Row, Col, Modal} from 'antd'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 
+import {logout} from '../../redux/actions'
 import menuList from '../../config/menuConfig'
 import {reqWeather} from '../../api'
 import {formateDate} from '../../utils/utils'
 import MemoryUtils from '../../utils/MemoryUtils'
-import storageUtils from '../../utils/storageUtils'
 import './header.less'
 
 /*
@@ -51,11 +51,7 @@ class Header extends Component {
       content: '确定退出吗?',
       onOk: () => {
         console.log('OK')
-        // 移除保存的user
-        storageUtils.removeUser()
-        MemoryUtils.user = {}
-        // 跳转到login
-        this.props.history.replace('/login')
+        this.props.logout()
       },
       onCancel() {
         console.log('Cancel')
@@ -127,7 +123,7 @@ class Header extends Component {
 
 export default connect(
   state => ({title: state.menuTitle}),
-  {}
+  {logout}
 )(withRouter(Header))
 
 

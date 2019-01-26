@@ -7,6 +7,8 @@ export const RECEIVE_USER = 'receive_user' // 接收用户
 
 export const ERROR_MSG = 'error_msg' // 错误信息
 
+export const RESET_USER = 'reset_user' // 重置用户
+
 /*
 * 有几个action type就会有几个对应的同步action creator
 */

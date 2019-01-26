@@ -5,7 +5,6 @@ import {connect} from 'react-redux'
 
 import {setMenuTitle} from '../../redux/actions'
 import menuList from '../../config/menuConfig'
-import MemoryUtils from '../../utils/MemoryUtils'
 import logo from '../../assets/images/logo.png'
 import './left-nav.less'
 
@@ -55,7 +54,7 @@ class LeftNav extends Component {
     2. 如果当前用户是admin
     3. 如果菜单项的key在用户的menus中
      */
-    if(item.isPublic || MemoryUtils.user.username==='admin' || menuSet.has(key)) {
+    if(item.isPublic || this.props.user.username==='admin' || menuSet.has(key)) {
       return true
 
     // 如果有子节点, 需要判断有没有一个child的key在menus中
@@ -122,6 +121,7 @@ class LeftNav extends Component {
           if(path===item.key || path.indexOf(item.key)===0) {
             // 分发action, 设置菜单标题
             this.props.setMenuTitle(item.title)
+            this.selectKey = item.key
           }
         }
       }
@@ -134,7 +134,7 @@ class LeftNav extends Component {
   在第一次render()之前调用
    */
   componentWillMount() {
-    this.menuSet = new Set(MemoryUtils.user.role.menus)
+    this.menuSet = new Set(this.props.user.role.menus)
     this.menuNodes = this.getNodes(menuList)
     console.log(this.menuNodes)
   }
@@ -142,7 +142,7 @@ class LeftNav extends Component {
 
   render() {
     // 当前请求的路径
-    const path = this.selectKey || this.props.location.pathname
+    const path = this.selectKey
     console.log('path', path)
     return (
       <div className='left-nav'>
@@ -163,6 +163,6 @@ class LeftNav extends Component {
 
 // 将一个非路由组件包装生成一个路由组件, 向非路由组件传递路由组件才有的3个属性: history/location/match
 export default connect(
-  state => ({}),
+  state => ({user: state.user}),
   {setMenuTitle}
 )(withRouter(LeftNav))

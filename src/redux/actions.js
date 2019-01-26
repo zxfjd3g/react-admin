@@ -6,7 +6,8 @@
 import {
   SET_MENU_TITLE,
   RECEIVE_USER,
-  ERROR_MSG
+  ERROR_MSG,
+  RESET_USER
 } from './action-types'
 import {reqLogin} from '../api'
 import storageUtils from '../utils/storageUtils'
@@ -44,4 +45,13 @@ export const login = (username, password) => {
       dispatch(errorMsg(msg))
     }
   }
+}
+
+/*
+退出登陆的同步action
+ */
+export const logout = () => {
+  // 移除local中的user
+  storageUtils.removeUser()
+  return {type: RESET_USER}
 }

@@ -8,7 +8,8 @@ import storageUtils from '../utils/storageUtils'
 import {
   SET_MENU_TITLE,
   RECEIVE_USER,
-  ERROR_MSG
+  ERROR_MSG,
+  RESET_USER
 } from './action-types'
 
 /*
@@ -35,6 +36,8 @@ function user(state=initUser, action) {
     case ERROR_MSG:
       const msg = action.data
       return {msg}
+    case RESET_USER:
+      return {}
     default:
       return state
   }
